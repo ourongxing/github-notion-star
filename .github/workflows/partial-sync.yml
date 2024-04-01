@@ -2,7 +2,7 @@ name: Partial Sync Notion Star
 
 on:
   schedule:
-    - cron: '0 */2 * * *'
+    - cron: "0 0 6,16 * *"
   workflow_dispatch:
 jobs:
   partial-sync:
