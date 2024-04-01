@@ -5,13 +5,13 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@notionhq/client@npm:^0.2.2":
-  version: 0.2.2
-  resolution: "@notionhq/client@npm:0.2.2"
+"@notionhq/client@npm:^2.2.14":
+  version: 2.2.14
+  resolution: "@notionhq/client@npm:2.2.14"
   dependencies:
     "@types/node-fetch": "npm:^2.5.10"
     node-fetch: "npm:^2.6.1"
-  checksum: 4ff411a156add1178d10daa4be58e5fa252ce0b7a1d970c14a42115a1b6b44d09c6ed264f2af8bf0443e39762427a6c69310713fdf1adb341a78bacef79bebdc
+  checksum: 7bdc91c585e8f5b910b04d5adb42b5e52443f991a5aa4ce7188af04398d3e992ab39bf30c57e1dbff2359c0282d7ea7fc01c82b0a15e4bfa070a2bb7fbe86eda
   languageName: node
   linkType: hard
 
@@ -282,7 +282,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "notionstar@workspace:."
   dependencies:
-    "@notionhq/client": "npm:^0.2.2"
+    "@notionhq/client": "npm:^2.2.14"
     "@octokit/core": "npm:^3.5.1"
     "@tsconfig/node16": "npm:^1.0.1"
     "@types/node": "npm:^16.3.3"
