@@ -75,7 +75,7 @@ export class Notion {
 
     async insertPage(repo: Repo) {
         if (repo.description && repo.description.length >= 2000) {
-            repo.description = repo.description.substr(0, 120) + '...'
+            repo.description = repo.description.substr(0, 120) + '...';
         }
         const data = await this.notion.pages.create({
             parent: {
@@ -128,7 +128,7 @@ export class Notion {
                     type: 'date',
                     date: {
                         start: repo.starredAt,
-                        end: repo.starredAt,
+                        time_zone: 'Asia/Chongqing',
                     },
                 },
             },
