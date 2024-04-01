@@ -20,7 +20,7 @@
         "prettier": "^2.3.2"
     },
     "dependencies": {
-        "@notionhq/client": "^2.2.14",
+        "@notionhq/client": "^0.2.2",
         "@octokit/core": "^3.5.1",
         "@tsconfig/node16": "^1.0.1",
         "@types/node": "^16.3.3",

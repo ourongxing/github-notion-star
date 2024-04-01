@@ -128,7 +128,6 @@ export class Notion {
                     type: 'date',
                     date: {
                         start: repo.starredAt,
-                        time_zone: 'Asia/Chongqing',
                     },
                 },
             },
