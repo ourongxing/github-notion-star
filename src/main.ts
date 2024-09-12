@@ -8,7 +8,20 @@ export async function fullSync() {
 
   for (const repo of github.repoList) {
     if (!notion.hasPage(repo.nameWithOwner)) {
-      await notion.insertPage(repo)
+      try {
+        await notion.insertPage(repo)
+      } catch (e: any) {
+        const errorText = e.toString()
+        if (
+          errorText.includes("PgPoolWaitConnectionTimeout")
+          || errorText.includes("Request timed out")
+          || errorText.includes("Request to Notion API has timed out")
+          || errorText.includes("Request to Notion API failed with status: 502")
+        ) {
+          notion.reset()
+          await notion.insertPage(repo)
+        }
+      }
     }
   }
 }

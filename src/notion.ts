@@ -1,4 +1,5 @@
 import process from "node:process"
+import { Agent } from "node:https"
 import { Client } from "@notionhq/client"
 import type { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints"
 import type { Repo } from "./types"
@@ -10,13 +11,21 @@ const databaseId = process.env.NOTION_DATABASE_ID as string
 const NAMESPACE = "notion-page"
 
 export class Notion {
-  private notion: Client
+  private notion!: Client
+  private pages: Record<string, { id: string }> = {}
+  private agent?: Agent
 
-  constructor() {
+  reset() {
+    if (this.agent) this.agent.destroy()
+    this.agent = new Agent()
     this.notion = new Client({
       auth: process.env.NOTION_API_KEY,
+      agent: this.agent,
     })
+  }
 
+  constructor() {
+    this.reset()
     this.pages = get(NAMESPACE, {})
 
     console.log(`Notion: restored from cache, count is ${Object.keys(this.pages).length}`)
@@ -25,8 +34,6 @@ export class Notion {
   save() {
     save(NAMESPACE, this.pages)
   }
-
-  pages: Record<string, { id: string }> = {}
 
   hasPage(name: string) {
     return !!this.pages[name]

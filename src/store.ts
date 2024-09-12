@@ -47,7 +47,7 @@ export const pageStore = new (class extends Store<{ cursor: string, pages: Recor
     return !!this.data.pages[name]
   }
 
-  pushPage(page: NotionPage) {
+  pushPage(page: any) {
     this.data.pages[page.properties.Name.title[0].plain_text] = {
       id: page.id,
     }
@@ -55,7 +55,7 @@ export const pageStore = new (class extends Store<{ cursor: string, pages: Recor
     this.save()
   }
 
-  pushPages(pages: NotionPage[], cursor?: string) {
+  pushPages(pages: any[], cursor?: string) {
     pages.forEach((page) => {
       this.data.pages[page.properties.Name.title[0].plain_text] = {
         id: page.id,
