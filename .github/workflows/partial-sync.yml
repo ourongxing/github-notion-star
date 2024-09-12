@@ -20,6 +20,9 @@ jobs:
           name: notion-sync-storage
           path: .cache
 
+      - uses: pnpm/action-setup@v4
+      - name: Install pnpm
+
       - name: Setup environment
         uses: actions/setup-node@v4.0.3
         with:
@@ -27,7 +30,7 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
 
-      - run: yarn
+      - run: pnpm i
 
       - name: Run Partial Sync
         env:
