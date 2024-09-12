@@ -1,45 +1,45 @@
 name: Partial Sync Notion Star
 
 on:
-    schedule:
-        - cron: '10 8 * * *'
-    workflow_dispatch:
+  schedule:
+    - cron: '10 8 * * *'
+  workflow_dispatch:
 jobs:
-    partial-sync:
-        runs-on: ubuntu-latest
-        environment: notion-sync
-        steps:
-            - uses: actions/checkout@v2
+  partial-sync:
+    runs-on: ubuntu-latest
+    environment: notion-sync
+    steps:
+      - uses: actions/checkout@v4
 
-            - name: Download cache storage of last build
-              uses: dawidd6/action-download-artifact@v2
-              continue-on-error: true
-              with:
-                  workflow: partial-sync.yml
-                  workflow_conclusion: success
-                  name: notion-sync-storage
-                  path: .cache
+      - name: Download cache storage of last build
+        uses: dawidd6/action-download-artifact@v6
+        continue-on-error: true
+        with:
+          workflow: partial-sync.yml
+          workflow_conclusion: success
+          name: notion-sync-storage
+          path: .cache
 
-            - name: Setup environment
-              uses: actions/setup-node@v2.2.0
-              with:
-                  always-auth: false
-                  node-version: 16.x
-                  cache: yarn
+      - name: Setup environment
+        uses: actions/setup-node@v4.0.3
+        with:
+          always-auth: false
+          node-version-file: .nvmrc
+          cache: pnpm
 
-            - run: yarn
+      - run: yarn
 
-            - name: Run Partial Sync
-              env:
-                  NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
-                  NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
-                  TOKEN_OF_GITHUB: ${{ secrets.TOKEN_OF_GITHUB }}
-                  FULLSYNC_LIMIT: 2000
-                  PARTIALSYNC_LIMIT: 10
-                  REPO_TOPICS_LIMIT: 50
-              run: npm start
+      - name: Run Partial Sync
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          TOKEN_OF_GITHUB: ${{ secrets.TOKEN_OF_GITHUB }}
+          FULLSYNC_LIMIT: 2000
+          PARTIALSYNC_LIMIT: 10
+          REPO_TOPICS_LIMIT: 50
+        run: pnpm start
 
-            - uses: actions/upload-artifact@v4
-              with:
-                  name: notion-sync-storage
-                  path: .cache
+      - uses: actions/upload-artifact@v4
+        with:
+          name: notion-sync-storage
+          path: .cache

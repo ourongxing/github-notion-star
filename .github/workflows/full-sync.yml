@@ -8,16 +8,16 @@ jobs:
     runs-on: ubuntu-latest
     environment: notion-sync
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Setup environment
-        uses: actions/setup-node@v2.2.0
+        uses: actions/setup-node@v4.0.3
         with:
           always-auth: false
-          node-version: 16.x
-          cache: yarn
+          node-version-file: .nvmrc
+          cache: pnpm
 
-      - run: yarn
+      - run: pnpm
 
       - name: Run Full Sync
         env:
@@ -28,4 +28,4 @@ jobs:
           PARTIALSYNC_LIMIT: 10
           REPO_TOPICS_LIMIT: 50
           FULL_SYNC: true
-        run: npm start
+        run: pnpm start

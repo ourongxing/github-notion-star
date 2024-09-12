@@ -16,13 +16,15 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "tsx ./main.ts",
+    "start": "tsx ./src/main.ts",
     "dev": "tsx --env-file=.env ./main.ts",
+    "test": "vitest",
     "lint": "eslint ."
   },
   "dependencies": {
     "@notionhq/client": "^2.2.15",
     "@octokit/core": "^6.1.2",
+    "dotenv": "^16.4.5",
     "write": "^2.0.0"
   },
   "devDependencies": {
