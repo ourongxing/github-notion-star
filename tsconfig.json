@@ -1,3 +1,22 @@
 {
-    "extends": "@tsconfig/node16"
+  "compilerOptions": {
+    "target": "ES2018",
+    "lib": ["ESNext"],
+    "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "allowJs": false,
+    "strict": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "downlevelIteration": true,
+    "importHelpers": true,
+    "noEmit": true,
+    "sourceMap": false,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": false
+  },
+  "include": ["./**/*.ts", "./**/*.tsx"],
+  "exxclude": ["node_modules/**.*"]
 }
