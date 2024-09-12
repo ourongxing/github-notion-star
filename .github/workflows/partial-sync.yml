@@ -20,8 +20,8 @@ jobs:
           name: notion-sync-storage
           path: .cache
 
-      - uses: pnpm/action-setup@v4
       - name: Install pnpm
+        uses: pnpm/action-setup@v4
 
       - name: Setup environment
         uses: actions/setup-node@v4.0.3
