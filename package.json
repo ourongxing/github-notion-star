@@ -17,7 +17,7 @@
   "main": "index.js",
   "scripts": {
     "start": "tsx ./src/main.ts",
-    "dev": "tsx --env-file=.env ./main.ts",
+    "dev": "tsx --env-file=.env ./src/main.ts",
     "test": "vitest",
     "lint": "eslint ."
   },
@@ -25,10 +25,12 @@
     "@notionhq/client": "^2.2.15",
     "@octokit/core": "^6.1.2",
     "dotenv": "^16.4.5",
+    "fs-extra": "^11.2.0",
     "write": "^2.0.0"
   },
   "devDependencies": {
     "@ourongxing/eslint-config": "3.2.3-beta.2",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.5.4",
     "@types/write": "^2.0.4",
     "prettier": "^3.3.3",
