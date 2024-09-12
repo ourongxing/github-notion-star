@@ -1,7 +1,9 @@
 import path from "node:path"
 import fs from "node:fs"
+import { fileURLToPath } from "node:url"
 import write from "write"
 
+const __dirname = fileURLToPath(new URL(import.meta.url))
 const CACHE_DIR = path.join(__dirname, "../.cache")
 
 function getCacheFilePath(key: string) {
