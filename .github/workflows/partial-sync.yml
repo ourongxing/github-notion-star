@@ -24,11 +24,11 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
-      - name: Restore cached Notion Pages
-        uses: actions/cache/restore@v4
+      - name: Cache Notion Pages
+        uses: actions/cache@v4
         with:
           path: .cache
-          key: notion-sync-storage
+          key: notion-synced-cache
 
       - name: Run Partial Sync
         env:
@@ -39,9 +39,3 @@ jobs:
           PARTIALSYNC_LIMIT: 10
           REPO_TOPICS_LIMIT: 50
         run: pnpm start
-
-      - name: Cache Notion Pages
-        uses: actions/cache/save@v4
-        with:
-          path: .cache
-          key: notion-sync-storage
