@@ -11,15 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download cache storage of last build
-        uses: dawidd6/action-download-artifact@v6
-        continue-on-error: true
-        with:
-          workflow: partial-sync.yml
-          workflow_conclusion: success
-          name: notion-sync-storage
-          path: .cache
-
       - name: Install pnpm
         uses: pnpm/action-setup@v4
 
@@ -37,7 +28,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: .cache
-          keys: notion-sync-storage
+          key: notion-sync-storage
 
       - name: Run Partial Sync
         env:
@@ -53,4 +44,4 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: .cache
-          keys: notion-sync-storage
+          key: notion-sync-storage
