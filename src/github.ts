@@ -67,7 +67,7 @@ export class Github {
 
       hasNextPage = data.starredRepositories.pageInfo.hasNextPage
       cursor = data.starredRepositories.pageInfo.endCursor
-      await delay(200)
+      await delay(100)
     }
 
     this.repoList = repoList
