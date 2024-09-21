@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  full-sync:
+  partial-sync:
     runs-on: ubuntu-latest
     environment: notion-sync
     steps:
@@ -20,9 +20,16 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
 
-      - run: pnpm
+      - name: Install dependencies
+        run: pnpm i
 
-      - name: Run Full Sync
+      - name: Cache Notion Pages
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: notion-synced-cache
+
+      - name: Run Sync
         env:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}

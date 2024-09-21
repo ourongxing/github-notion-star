@@ -29,7 +29,7 @@ export class Notion {
 
   constructor() {
     this.reset()
-    if (process.env.Bi_SYNC || process.env.FULL_SYNC) {
+    if (process.env.BI_SYNC || process.env.FULL_SYNC) {
       this.pages = {}
       console.log(`Notion: drop cache`)
     } else {
@@ -47,7 +47,7 @@ export class Notion {
   }
 
   hasPage(id: string) {
-    return !!this.pages[id]
+    return this.pages?.[id]?.id
   }
 
   needUpdate(repo: Repo) {
@@ -123,12 +123,6 @@ export class Notion {
               },
             },
           ],
-        },
-        "Type": {
-          type: "select",
-          select: {
-            name: "Star",
-          },
         },
         "Link": {
           type: "url",
@@ -207,12 +201,6 @@ export class Notion {
               },
             },
           ],
-        },
-        "Type": {
-          type: "select",
-          select: {
-            name: "Star",
-          },
         },
         "Link": {
           type: "url",

@@ -1,7 +1,12 @@
-name: Partial Sync
+name: Bidirectional Sync
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - bi-sync
 
 jobs:
   partial-sync:
@@ -37,4 +42,5 @@ jobs:
           FULLSYNC_LIMIT: 2000
           PARTIALSYNC_LIMIT: 10
           REPO_TOPICS_LIMIT: 50
+          BI_SYNC: true
         run: pnpm start

@@ -10,7 +10,7 @@ ENVS.forEach((env) => {
 
 if (process.env.FULL_SYNC) {
   fullSync()
-} else if (process.env.Bi_SYNC) {
+} else if (process.env.BI_SYNC) {
   biSync()
 } else {
   partialSync()

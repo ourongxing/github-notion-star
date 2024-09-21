@@ -1,6 +1,7 @@
 import process from "node:process"
 import { Octokit } from "@octokit/core"
 import type { GithubRepositoryTopic, QueryForStarredRepository, Repo, RepositoryTopic } from "./types"
+import { delay } from "./utils"
 
 // @ts-expect-error type error
 const githubTopicsFirst = +process.env.REPO_TOPICS_LIMIT || 50
@@ -66,6 +67,7 @@ export class Github {
 
       hasNextPage = data.starredRepositories.pageInfo.hasNextPage
       cursor = data.starredRepositories.pageInfo.endCursor
+      await delay(200)
     }
 
     this.repoList = repoList
@@ -75,6 +77,7 @@ export class Github {
 
   async unstar(repo: Repo) {
     await this.client.request(`DELETE /user/starred/${repo.nameWithOwner}`, {})
+    console.log(`Github: Unstar ${repo.nameWithOwner} success`)
   }
 
   async fetchLatest() {
