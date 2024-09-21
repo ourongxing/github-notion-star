@@ -5,6 +5,40 @@ import type { GithubRepositoryTopic, QueryForStarredRepository, Repo, Repository
 // @ts-expect-error type error
 const githubTopicsFirst = +process.env.REPO_TOPICS_LIMIT || 50
 
+const QL = `
+                            pageInfo {
+                                startCursor
+                                endCursor
+                                hasNextPage
+                            }
+                            edges {
+                                starredAt
+                                node {
+                                    id
+                                    isFork
+                                    isEmpty
+                                    isArchived
+                                    isMirror
+                                    isDisabled
+                                    isPrivate
+                                    isLocked
+                                    nameWithOwner
+                                    url
+                                    description
+                                    primaryLanguage {
+                                        name
+                                    }
+                                    repositoryTopics(first: $topicFirst) {
+                                        nodes {
+                                            topic {
+                                                name
+                                            }
+                                        }
+                                    }
+                                    updatedAt
+                                }
+                            }
+`
 export class Github {
   private client: Octokit
 
@@ -16,9 +50,8 @@ export class Github {
 
   repoList: Repo[] = []
 
-  async fullSync() {
-    // @ts-expect-error type error
-    const limit = +process.env.FULLSYNC_LIMIT || 2000
+  async fetchFull() {
+    const limit = +(process.env.FULLSYNC_LIMIT || 2000)
     console.log(`Github: Start to get all starred repos, limit is ${limit}`)
 
     let cursor = ""
@@ -40,9 +73,12 @@ export class Github {
     console.log(`Github: Get all starred repos success, count is ${this.repoList.length}`)
   }
 
-  async getList() {
-    // @ts-expect-error type error
-    const limit = +process.env.PARTIALSYNC_LIMIT || 10
+  async unstar(repo: Repo) {
+    await this.client.request(`DELETE /user/starred/${repo.nameWithOwner}`, {})
+  }
+
+  async fetchLatest() {
+    const limit = +(process.env.PARTIALSYNC_LIMIT || 10)
 
     console.log(`Github: Start to sync latest starred repos, limit is ${limit}`)
 
@@ -64,38 +100,13 @@ export class Github {
 
   private async getStarredRepoAfterCursor(cursor: string, topicFirst: number) {
     const data = await this.client.graphql<{ viewer: QueryForStarredRepository }>(
-      `
-                query ($after: String, $topicFirst: Int) {
+      `query ($after: String, $topicFirst: Int) {
                     viewer {
-                        starredRepositories(after: $after) {
-                            pageInfo {
-                                startCursor
-                                endCursor
-                                hasNextPage
-                            }
-                            edges {
-                                starredAt
-                                node {
-                                    nameWithOwner
-                                    url
-                                    description
-                                    primaryLanguage {
-                                        name
-                                    }
-                                    repositoryTopics(first: $topicFirst) {
-                                        nodes {
-                                            topic {
-                                                name
-                                            }
-                                        }
-                                    }
-                                    updatedAt
-                                }
-                            }
+                        starredRepositories(after: $after, orderBy: {field: STARRED_AT, direction: DESC}) {
+                            ${QL}
                         }
                     }
-                }
-            `,
+                }`,
       {
         after: cursor,
         topicFirst,
@@ -105,47 +116,17 @@ export class Github {
     return data.viewer
   }
 
-  private async getLastStarredRepo(last: number, topicFirst: number) {
+  private async getLastStarredRepo(limit: number, topicFirst: number) {
     const data = await this.client.graphql<{ viewer: QueryForStarredRepository }>(
-      `
-                query ($last: Int, $topicFirst: Int) {
+      ` query ($limit: Int, $topicFirst: Int) {
                     viewer {
-                        starredRepositories(last: $last) {
-                            pageInfo {
-                                startCursor
-                                endCursor
-                                hasNextPage
-                            }
-                            nodes {
-                                nameWithOwner
-                                url
-                                description
-                            }
-                            edges {
-                                starredAt
-                                node {
-                                    nameWithOwner
-                                    url
-                                    description
-                                    primaryLanguage {
-                                        name
-                                    }
-                                    repositoryTopics(first: $topicFirst) {
-                                        nodes {
-                                            topic {
-                                                name
-                                            }
-                                        }
-                                    }
-                                    updatedAt
-                                }
-                            }
+                        starredRepositories(first: $limit, orderBy: {field: STARRED_AT, direction: DESC}) {
+                            ${QL}
                         }
                     }
-                }
-            `,
+                } `,
       {
-        last,
+        limit,
         topicFirst,
       },
     )

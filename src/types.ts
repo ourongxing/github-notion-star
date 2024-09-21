@@ -1,8 +1,4 @@
-import type {
-  QueryDatabaseResponse,
-  TitlePropertyItemObjectResponse,
-  UrlPropertyItemObjectResponse,
-} from "@notionhq/client/build/src/api-endpoints"
+import type { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints"
 
 export interface RepositoryTopic {
   name: string
@@ -21,6 +17,14 @@ export interface Language {
 }
 
 export interface RepoBase {
+  id: string
+  isFork: boolean
+  isEmpty: boolean
+  isArchived: boolean
+  isDisabled: boolean
+  isMirror: boolean
+  isPrivate: boolean
+  isLocked: boolean
   nameWithOwner: string
   url: string
   description: string
