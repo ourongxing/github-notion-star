@@ -3,12 +3,16 @@ name: Full Sync
 on:
   workflow_dispatch:
 
+permissions:
+  actions: write
+
 jobs:
   partial-sync:
     runs-on: ubuntu-latest
     environment: notion-sync
     steps:
       - uses: actions/checkout@v4
+      - uses: ../clear-cache
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
