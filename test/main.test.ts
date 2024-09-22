@@ -84,3 +84,7 @@ it.skip("fetch full notion page", {
 }, async () => {
   await notion.fetchFull()
 })
+
+it("unstar", async () => {
+  await github.unstar({ nameWithOwner: "nathom/filetype.nvim" })
+})
