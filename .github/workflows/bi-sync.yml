@@ -8,12 +8,33 @@ on:
     paths:
       - bi-sync
 
+permissions:
+  actions: write
+
 jobs:
   partial-sync:
     runs-on: ubuntu-latest
     environment: notion-sync
+    env:
+      CACHE_KEY: notion-synced-cache
     steps:
       - uses: actions/checkout@v4
+
+      - name: Clear cache
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const caches = await github.rest.actions.getActionsCacheList({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            })
+            for (const cache of caches.data.actions_caches) {
+              github.rest.actions.deleteActionsCacheById({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                cache_id: ${{ env.CACHE_KEY }},
+              })
+            }
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -32,7 +53,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .cache
-          key: notion-synced-cache
+          key: ${{ env.CACHE_KEY }}
 
       - name: Run Sync
         env:
