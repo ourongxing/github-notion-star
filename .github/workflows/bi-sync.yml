@@ -19,7 +19,7 @@ jobs:
       CACHE_KEY: notion-synced-cache
     steps:
       - uses: actions/checkout@v4
-      - uses: .github/actions/clear-cache
+      - uses: ./.github/actions/clear-cache
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
