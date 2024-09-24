@@ -1,6 +1,6 @@
 import process from "node:process"
 import { github } from "src/github"
-import { notion } from "src/notion"
+import { Notion } from "src/notion"
 import { biSync } from "src/sync"
 import { expect, it } from "vitest"
 
@@ -12,9 +12,7 @@ it("env should be added", () => {
   })
 })
 
-it.skip("bi sync", {
-  timeout: 600000,
-}, async () => {
+it.skip("bi sync", { timeout: 600000 }, async () => {
   await biSync()
 })
 
@@ -79,12 +77,7 @@ it.skip("full sync", { timeout: 600000 }, async () => {
   expect(github.repoList).toMatchFileSnapshot("github-full-sync.json")
 })
 
-it.skip("fetch full notion page", {
-  timeout: 600000,
-}, async () => {
+it.skip("fetch full notion page", { timeout: 600000 }, async () => {
+  const notion = new Notion()
   await notion.fetchFull()
-})
-
-it("unstar", async () => {
-  await github.unstar({ nameWithOwner: "nathom/filetype.nvim" })
 })

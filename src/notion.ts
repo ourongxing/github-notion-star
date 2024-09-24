@@ -12,7 +12,7 @@ const databaseId = process.env.NOTION_DATABASE_ID as string
 const NAMESPACE = "notion-page"
 
 export class Notion {
-  private notion!: Client
+  private notionRaw!: Client
   private pages: Record<string, { title: string, id: string }> = {}
   private agent?: Agent
   repoList: string[] = []
@@ -20,11 +20,62 @@ export class Notion {
   reset() {
     if (this.agent) this.agent.destroy()
     this.agent = new Agent()
-    this.notion = new Client({
+    this.notionRaw = new Client({
       auth: process.env.NOTION_API_KEY,
       agent: this.agent,
-      timeoutMs: 10000,
     })
+  }
+
+  private lastUseAPI = 0
+  async delay200() {
+    const now = Date.now()
+    const interval = now - this.lastUseAPI
+    this.lastUseAPI = now
+    await delay(interval > 100 ? 0 : 100)
+  }
+
+  private get notion() {
+    // eslint-disable-next-line ts/no-this-alias
+    const that = this
+    function wrap<T extends (...args: any[]) => any>(fn: T): T {
+      async function n(...args: Parameters<T>): Promise<ReturnType<T>> {
+        await that.delay200()
+        const result = await fn(...args)
+        if (result instanceof Promise) {
+          return result.then((res) => {
+            return res
+          }).catch((e) => {
+            const errorText = e.toString()
+            if (
+              errorText.includes("PgPoolWaitConnectionTimeout")
+              || errorText.includes("Request timed out")
+              || errorText.includes("Request to Notion API has timed out")
+              || errorText.includes("Request to Notion API failed with status: 502")
+            ) {
+              that.reset()
+              console.log("Notion: reset agent and retry")
+            } else {
+              console.log(e)
+              throw e
+            }
+          })
+        } else {
+          return result
+        }
+      }
+
+      return n as T
+    }
+
+    return {
+      databases: {
+        query: wrap(this.notionRaw.databases.query),
+      },
+      pages: {
+        create: wrap(this.notionRaw.pages.create),
+        update: wrap(this.notionRaw.pages.update),
+      },
+    }
   }
 
   constructor() {
@@ -73,20 +124,12 @@ export class Notion {
         database_id: databaseId,
         page_size: 100,
         start_cursor: cursor,
-        sorts: [{
-          timestamp: "last_edited_time",
-          direction: "ascending",
-        }],
       })
 
       for (const page of database.results) {
         const props = (page as any).properties
         const id = props.ID.rich_text[0].plain_text
         const title = props.Name.title[0].plain_text
-        if (this.pages[id]) {
-          console.log("Notion: del duplicate page")
-          await this.delPage(this.pages[id].id)
-        }
         this.pages[id] = {
           id: page.id,
           title,
@@ -96,7 +139,6 @@ export class Notion {
       hasNext = database.has_more
       // @ts-expect-error type
       cursor = database.next_cursor
-      await delay(200)
     }
 
     console.log(`Notion: Get all pages success, count is ${Object.keys(this.pages).length}`)
@@ -105,6 +147,7 @@ export class Notion {
   }
 
   async insertPage(repo: Repo) {
+    if (this.hasPage(repo.id)) return
     if (repo.description && repo.description.length >= 2000) {
       repo.description = `${repo.description.slice(0, 1200)}...`
     }
@@ -269,5 +312,3 @@ export class Notion {
     })
   }
 }
-
-export const notion = new Notion()
