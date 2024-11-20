@@ -77,7 +77,7 @@ it.skip("full sync", { timeout: 600000 }, async () => {
   expect(github.repoList).toMatchFileSnapshot("github-full-sync.json")
 })
 
-it.skip("fetch full notion page", { timeout: 600000 }, async () => {
+it("fetch full notion page", { timeout: 600000 }, async () => {
   const notion = new Notion()
   await notion.fetchFull()
 })

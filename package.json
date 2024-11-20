@@ -2,18 +2,7 @@
   "name": "notionstar",
   "type": "module",
   "version": "2.0.0-beta.1",
-  "packageManager": "pnpm@9.10.0+sha512.73a29afa36a0d092ece5271de5177ecbf8318d454ecd701343131b8ebc0c1a91c487da46ab77c8e596d6acf1461e3594ced4becedf8921b074fbd8653ed7051c",
-  "description": "",
-  "author": "",
-  "license": "ISC",
-  "homepage": "https://github.com/lcjnil/actions#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lcjnil/actions.git"
-  },
-  "bugs": {
-    "url": "https://github.com/lcjnil/actions/issues"
-  },
+  "packageManager": "pnpm@9.13.2+sha512.88c9c3864450350e65a33587ab801acf946d7c814ed1134da4a924f6df5a2120fd36b46aab68f7cd1d413149112d53c7db3a4136624cfd00ff1846a0c6cef48a",
   "main": "index.js",
   "scripts": {
     "start": "tsx ./src/main.ts",
